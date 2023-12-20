@@ -21,9 +21,17 @@ public:
 public:
     MMObject(std::string filePath);
     ~MMObject();
+    const char* getVideoCodec();
+    double getFrameRate();
+    const char* getAudioCodec();
+    int getSampleRate();
 
 private:
     AVFormatContext* context;
+    const char* videoCodec;
+    double frameRate;
+    const char* audioCodec;
+    int sampleRate;
 };
 
 #endif // MMOBJECT_H

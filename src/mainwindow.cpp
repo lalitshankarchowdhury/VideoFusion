@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget* parent)
     ui->comboBox_3->setSizeAdjustPolicy(QComboBox::SizeAdjustPolicy::AdjustToContents);
     ui->comboBox_4->setSizeAdjustPolicy(QComboBox::SizeAdjustPolicy::AdjustToContents);
     ui->comboBox_5->setSizeAdjustPolicy(QComboBox::SizeAdjustPolicy::AdjustToContents);
+
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->resizeRowsToContents();
 }
 
 MainWindow::~MainWindow()
@@ -50,25 +53,31 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     QStringList filePaths = QFileDialog::getOpenFileNames(this, "Select input files",
-        homeLocation, "All files (*.*)", nullptr,
+        homeLocation, "Video Files (*.mp4 *.avi *.mkv *.mov *.wmv *.flv *.mpeg *.mpg)", nullptr,
         QFileDialog::ReadOnly);
     if (!filePaths.isEmpty()) {
         for (QString filePath : filePaths) {
             try {
                 MMObject object(filePath.toStdString());
+
+                QStringList rowData = {
+                    filePath,
+                    object.getVideoCodec(),
+                    QString::number(object.getFrameRate()),
+                    object.getAudioCodec(),
+                    QString::number(object.getSampleRate()),
+                };
+                QList<QStandardItem*> rowItems;
+                for (QString cellData : rowData) {
+                    QStandardItem* cellItem = new QStandardItem(cellData);
+                    rowItems.append(cellItem);
+                }
+                model.appendRow(rowItems);
             } catch (MMObject::Exception& ex) {
                 QMessageBox::warning(this, "Warning", ex.what());
             } catch (...) {
                 QMessageBox::warning(this, "Warning", "Unknown error occurred while trying to read file");
             }
-
-            QStringList rowData = { filePath, "Test", "Test", "Test", "Test" };
-            QList<QStandardItem*> rowItems;
-            for (QString cellData : rowData) {
-                QStandardItem* cellItem = new QStandardItem(cellData);
-                rowItems.append(cellItem);
-            }
-            model.appendRow(rowItems);
         }
 
         ui->tableView->resizeColumnsToContents();
@@ -83,6 +92,9 @@ void MainWindow::on_pushButton_2_clicked()
     for (const QModelIndex& index : selectedIndexes) {
         ui->tableView->model()->removeRow(index.row());
     }
+
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->resizeRowsToContents();
 }
 
 void MainWindow::on_pushButton_3_clicked()
