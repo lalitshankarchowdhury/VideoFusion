@@ -74,9 +74,9 @@ void MainWindow::on_pushButton_clicked()
                 }
                 model.appendRow(rowItems);
             } catch (MMObject::Exception& ex) {
-                QMessageBox::warning(this, "Warning", ex.what());
+                QMessageBox::warning(this, "Warning", filePath + ": " + ex.what());
             } catch (...) {
-                QMessageBox::warning(this, "Warning", "Unknown error occurred while trying to read file");
+                QMessageBox::warning(this, "Warning", filePath + ": " + "Unknown error occurred while reading");
             }
         }
 

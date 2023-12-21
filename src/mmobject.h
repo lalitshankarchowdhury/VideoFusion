@@ -21,10 +21,10 @@ public:
 public:
     MMObject(std::string filePath);
     ~MMObject();
-    const char* getVideoCodec();
-    double getFrameRate();
-    const char* getAudioCodec();
-    int getSampleRate();
+    const char* getVideoCodec() const noexcept;
+    double getFrameRate() const noexcept;
+    const char* getAudioCodec() const noexcept;
+    int getSampleRate() const noexcept;
 
 private:
     AVFormatContext* context;
